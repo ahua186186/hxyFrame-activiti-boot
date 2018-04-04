@@ -18,8 +18,8 @@ public class CodeUtils {
 
     private static CodeService codeService = SpringContextUtils.getBean(CodeService.class);
 
-    public static RedisUtil buildRedisUtils(){
-        return (RedisUtil) SpringContextUtils.getBean("redisUtil");
+    public static RedisClusterUtil buildRedisUtils(){
+        return (RedisClusterUtil) SpringContextUtils.getBean("redisClusterUtil");
     }
 
 

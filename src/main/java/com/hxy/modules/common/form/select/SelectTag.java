@@ -1,10 +1,7 @@
 package com.hxy.modules.common.form.select;
 
 import com.hxy.modules.common.common.Constant;
-import com.hxy.modules.common.utils.JsonUtil;
-import com.hxy.modules.common.utils.RedisUtil;
-import com.hxy.modules.common.utils.SpringContextUtils;
-import com.hxy.modules.common.utils.StringUtils;
+import com.hxy.modules.common.utils.*;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 
 import javax.servlet.jsp.JspException;
@@ -39,10 +36,10 @@ public class SelectTag extends SimpleTagSupport {
     private String otherAttr;//设置其他属性，格式为 otherAttr=" disabled onclick=\"onclick('123',this)\" "
     private Boolean isgetChildChild;//是否获取子节点的子节点
     
-    public static RedisUtil buildRedisUtils(){
-    	return (RedisUtil) SpringContextUtils.getBean("redisUtil");
+    public static RedisClusterUtil buildRedisUtils(){
+    	return (RedisClusterUtil) SpringContextUtils.getBean("redisClusterUtil");
     }
-    private static RedisUtil redisutils = SpringContextUtils.getBean(RedisUtil.class);
+    private static RedisClusterUtil redisutils = SpringContextUtils.getBean(RedisClusterUtil.class);
     @SuppressWarnings("unchecked")
 	public void doTag()throws JspException,IOException {
 		Writer out = getJspContext().getOut();

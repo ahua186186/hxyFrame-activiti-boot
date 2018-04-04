@@ -1,6 +1,6 @@
 package com.hxy.modules.gen.utils;
 
-import com.hxy.HxyFrameBootApplication;
+import com.hxy.HxyFrameActivitiBootApplication;
 import com.hxy.modules.common.common.Constant;
 import com.hxy.modules.gen.service.SysGeneratorService;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import javax.annotation.Resource;
  * @Date 2017/11/15
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = HxyFrameBootApplication.class)
+@SpringBootTest(classes = HxyFrameActivitiBootApplication.class)
 public class GenLocalUtils {
     @Resource
     private SysGeneratorService generatorService;

@@ -13,15 +13,15 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableAutoConfiguration(exclude={SecurityAutoConfiguration.class})
 @ServletComponentScan
 @ComponentScan({"com.hxy.modules.activiti.org.activiti", "com.hxy"})
-public class HxyFrameBootApplication extends SpringBootServletInitializer {
+public class HxyFrameActivitiBootApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HxyFrameBootApplication.class, args);
+		SpringApplication.run(HxyFrameActivitiBootApplication.class, args);
 	}
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-		return builder.sources(HxyFrameBootApplication.class);
+		return builder.sources(HxyFrameActivitiBootApplication.class);
 	}
 
 
