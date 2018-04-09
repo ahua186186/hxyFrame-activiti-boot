@@ -85,11 +85,11 @@
         }
         //弹框层
         layer.open({
-            scrollbar: false,
+            scrollbar: true,
             type: 2,
             title : [titile , true],
             area: ['30%', '450px'], //宽高
-            content: [url,'no'],
+            content: [url,'on'],
             shadeClose : true,
         });
     }
@@ -103,12 +103,12 @@
         var url="${webRoot}/plugins/process/modeler.html?modelId="+modelId;
         //弹框层
         layer.open({
-            scrollbar: false,
+            scrollbar: true,
             type: 2,
             title : ["流程图设计" , true],
             area: ['90%', '90%'], //宽高
-            content: [url,'no'],
-            shadeClose : false,
+            content: [url,'on'],
+            shadeClose : true,
         });
     }
 
@@ -126,14 +126,16 @@
     function flowNodeSet(modelId) {
         var url="${webRoot}/act/model/flowTree?modelId="+modelId;
         //弹框层
-        layer.open({
-            scrollbar: false,
+        var index=layer.open({
+            scrollbar: true,
             type: 2,
             title : ["流程节点设置" , true],
             area: ['80%', '80%'], //宽高
-            content: [url,'no'],
-            shadeClose : false,
+            content: [url,'on'],
+            shadeClose : true,
+            maxmin : true,
         });
+        layer.iframeAuto(index);
     }
 
     /**

@@ -253,11 +253,11 @@
              var url="${webRoot}/act/model/userAreaSelect";
              //弹框层
              layer.open({
-                 scrollbar: false,
+                 scrollbar: true,
                  type: 2,
                  title : ["审批者选择范围" , true],
                  area: ['90%', '90%'], //宽高
-                 content: [url,'no'],
+                 content: [url,'on'],
                  shadeClose : false,
              });
          }

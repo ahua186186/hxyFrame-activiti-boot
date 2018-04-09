@@ -68,7 +68,7 @@
         var url="${webRoot}/act/deal/flowInfoTab?flag=2&actKey="+actKey+"&busId="+busId+"&instanceId="+instanceId+"&taskId="+taskId+"&defId="+defid+"&nodeType="+nodeType ;
         //弹框层
         layer.open({
-            scrollbar: false,
+            scrollbar: true,
             type: 2,
             title : ["办理任务" , true],
             area: ['90%', '90%'], //宽高

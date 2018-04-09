@@ -184,12 +184,12 @@
         var url="${webRoot}/act/deal/userWindow?nodeId="+nodeId+"&nodeAction="+nodeAction;
         //弹框层
         layer.open({
-            scrollbar: false,
+            scrollbar: true,
             type: 2,
             title : ["选择下级审批" , true],
             area: ['90%', '90%'], //宽高
-            content: [url,'no'],
-            shadeClose : false,
+            content: [url,'on'],
+            shadeClose : true,
         });
     }
 

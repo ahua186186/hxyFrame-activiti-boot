@@ -139,11 +139,11 @@
         var url="${webRoot}/act/deal/userWindow?nodeId="+flowInfo.nodelId+"&nodeAction="+flowInfo.nodeAction;
         //弹框层
         layer.open({
-            scrollbar: false,
+            scrollbar: true,
             type: 2,
             title : [flowInfo.title , true],
             area: ['90%', '90%'], //宽高
-            content: [url,'no'],
+            content: [url,'on'],
             shadeClose : false,
         });
     }
