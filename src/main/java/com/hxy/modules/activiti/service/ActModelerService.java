@@ -138,7 +138,7 @@ public interface ActModelerService {
      * 驳回到流程上一步
      * @param processTaskDto
      */
-    void backPreviousNode(ProcessTaskDto processTaskDto);
+    void backPreviousNode(ProcessTaskDto processTaskDto,Map<String,Object> map) throws Exception;
 
     /**
      * 不同意,直接结束流程,业务记录进入可编辑状态，可以修改业务数据后再提交流程

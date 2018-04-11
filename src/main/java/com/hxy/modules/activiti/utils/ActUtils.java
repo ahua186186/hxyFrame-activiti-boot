@@ -849,8 +849,8 @@ public class ActUtils {
         taskService.saveTask(task);
         taskService.complete(taskId, variables);
 
-        //顺序会签处理
-        dealMultiSequential(task.getProcessInstanceId(), comment, task.getTaskDefinitionKey());
+        //顺序会签处理,会签场景不需要驳回
+        //dealMultiSequential(task.getProcessInstanceId(), comment, task.getTaskDefinitionKey());
         //设置回退的任务处理人
         setBackTaskDealer(task,activityId);
         // 删除目标节点新流入

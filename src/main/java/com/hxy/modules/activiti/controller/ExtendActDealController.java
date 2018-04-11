@@ -7,6 +7,7 @@ import com.hxy.modules.activiti.entity.ExtendActModelEntity;
 import com.hxy.modules.activiti.entity.ExtendActNodesetEntity;
 import com.hxy.modules.activiti.entity.ExtendActTasklogEntity;
 import com.hxy.modules.activiti.service.*;
+import com.hxy.modules.common.common.WorkflowException;
 import com.hxy.modules.common.exception.MyException;
 import com.hxy.modules.common.page.Page;
 import com.hxy.modules.common.utils.Result;
@@ -385,6 +386,35 @@ public class ExtendActDealController {
         } catch (Exception e) {
             e.printStackTrace();
             result=Result.error("驳回到发起人,失败");
+        }
+        return result;
+    }
+
+    /**
+     * 驳回到上一步，重新编辑提交
+     * @param processTaskDto
+     * @return
+     */
+    @RequestMapping(value = "backPreviousNode",method = RequestMethod.POST)
+    @ResponseBody
+    public Result backPreviousNode(ProcessTaskDto processTaskDto,HttpServletRequest request){
+        Result result = null;
+        try {
+            Map<String, String[]> parameterMap = request.getParameterMap();
+            Map<String,Object> params = new LinkedCaseInsensitiveMap<>();
+            for (String key:parameterMap.keySet()){
+                params.put(key,parameterMap.get(key)[0]);
+            }
+            try {
+                actModelerService.backPreviousNode(processTaskDto,params);
+            }catch (WorkflowException ex){
+                log.error("error:",ex);
+                return Result.ok(ex.getMsg());
+            }
+            result=Result.ok("驳回到上一步,成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            result=Result.error("驳回到上一步,失败");
         }
         return result;
     }

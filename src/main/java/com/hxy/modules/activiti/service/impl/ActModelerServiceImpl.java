@@ -12,8 +12,10 @@ import com.hxy.modules.activiti.dto.ProcessTaskDto;
 import com.hxy.modules.activiti.entity.*;
 import com.hxy.modules.activiti.service.*;
 import com.hxy.modules.activiti.utils.ActUtils;
+import com.hxy.modules.activiti.utils.ActivitiUtil;
 import com.hxy.modules.activiti.utils.AnnotationUtils;
 import com.hxy.modules.common.common.Constant;
+import com.hxy.modules.common.common.WorkflowException;
 import com.hxy.modules.common.entity.TableInfo;
 import com.hxy.modules.common.exception.MyException;
 import com.hxy.modules.common.page.Page;
@@ -888,7 +890,8 @@ public class ActModelerServiceImpl implements ActModelerService {
     }
 
     @Override
-    public void backPreviousNode(ProcessTaskDto processTaskDto) {
+    @Transactional
+    public void backPreviousNode(ProcessTaskDto processTaskDto,Map<String,Object> map) throws Exception  {
         if(StringUtils.isEmpty(processTaskDto.getTaskId())){
             throw new MyException("任务id不能为空");
         }
@@ -901,8 +904,100 @@ public class ActModelerServiceImpl implements ActModelerService {
         if(StringUtils.isEmpty(processTaskDto.getInstanceId())){
             throw new MyException("业务id不能为空");
         }
+        //查询流程业务基本信息
         Task task = taskService.createTaskQuery().taskId(processTaskDto.getTaskId()).singleResult();
-        //ActUtils.getProActivityId(processTaskDto.getDefId(),task.getTaskDefinitionKey(),);
+        ExtendActNodesetEntity nodesetEntity = nodesetService.queryByNodeId(task.getTaskDefinitionKey());
+        ExtendActBusinessEntity actBus = businessService.queryByActKey(ActUtils.findProcessDefinitionEntityByTaskId(task.getId()).getKey());
+
+        //获取上一个节点
+        Map<String, Object> variables;
+        // 取得当前任务
+        HistoricTaskInstance currTask = historyService
+                .createHistoricTaskInstanceQuery().taskId(processTaskDto.getTaskId())
+                .singleResult();
+        // 取得流程实例
+        ProcessInstance instance = runtimeService
+                .createProcessInstanceQuery()
+                .processInstanceId(currTask.getProcessInstanceId())
+                .singleResult();
+        if (instance == null) {
+            throw new RuntimeException("流程已结束");
+        }
+        variables = instance.getProcessVariables();
+        // 取得流程定义
+        ProcessDefinitionEntity definition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
+                .getDeployedProcessDefinition(currTask
+                        .getProcessDefinitionId());
+        if (definition == null) {
+            throw new RuntimeException("流程定义未找到");
+        }
+        //结束的活动节点
+        ActivityImpl endActivityImpl=null;
+        ActivityImpl startActivityImpl=null;
+        for (ActivityImpl activityImpl : definition.getActivities()) {
+            String type =(String) activityImpl.getProperty("type");
+            if(type.equals("endEvent")){
+                endActivityImpl =  activityImpl;
+            }
+        }
+
+        for (ActivityImpl activityImpl : definition.getActivities()) {
+            String type =(String) activityImpl.getProperty("type");
+            if(type.equals("startEvent")){
+                startActivityImpl =  activityImpl;
+            }
+        }
+
+        ActivityImpl currActivity = ((ProcessDefinitionImpl) definition)
+                .findActivity(currTask.getTaskDefinitionKey());
+        List<ActivityImpl> rtnList = new ArrayList<>();
+        List<ActivityImpl> tempList = new ArrayList<>();
+        List<ActivityImpl> activities = ActivitiUtil.iteratorBackActivity(
+                processTaskDto.getTaskId(),
+                currActivity,
+                rtnList,
+                tempList
+        );
+        if (activities == null || activities.size() <= 0) throw new WorkflowException("没有可以选择的驳回节点!");
+        List<Task> list = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
+        for (Task taskTmp : list) {
+            if (!taskTmp.getId().equals(processTaskDto.getTaskId())) {
+                taskTmp.setAssignee("排除标记");
+                ActivitiUtil.commitProcess(taskTmp.getId(), null, endActivityImpl.getId());
+            }
+        }
+        String status=Constant.ActStauts.APPROVAL.getValue();
+        if(activities.get(0).getId().equals(startActivityImpl.getId())){//如果驳回节点是start节点，则直接驳回发起人，结束流程
+            status = Constant.ActStauts.END.getValue();
+            ActUtils.turnTransition(processTaskDto.getTaskId(), "end", null, processTaskDto.getRemark());
+        }else {
+            ActUtils.turnTransition(processTaskDto.getTaskId(), activities.get(0).getId(), null, processTaskDto.getRemark());
+
+        }//更新流程扩展日志表
+        ExtendActTasklogEntity taskLog = new ExtendActTasklogEntity();
+        Date date = new Date();
+        taskLog.setTaskId(processTaskDto.getTaskId());
+        taskLog.setAppOpinion(processTaskDto.getRemark());
+        taskLog.setDealId(UserUtils.getCurrentUserId().toString());
+        taskLog.setDealTime(date);
+        taskLog.setAppAction(Constant.ActTaskResult.TURN_DOWN.getValue());
+        tasklogService.updateByTaskId(taskLog);
+        Class<?> aClass = Class.forName(actBus.getClassurl());
+        ActTable actTable = aClass.getAnnotation(ActTable.class);
+        //保存流程更改过的业务记录信息
+        changeFields(actTable,processTaskDto.getBusId(),nodesetEntity.getChangeFiles(),actBus.getClassurl(),map);
+        //更新业务状态信息 为已经审批
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put(TableInfo.TAB_TABLENAME, actTable.tableName());
+        updateMap.put(TableInfo.TAB_PKNAME, actTable.pkName());
+        updateMap.put(TableInfo.TAB_ID, processTaskDto.getBusId());
+        updateMap.put("status", status);
+        updateMap.put("actResult",Constant.ActResult.NO_AGREE.getValue());
+        actExtendDao.updateBusInfo(updateMap);
+        ExtendActFlowbusEntity flowbusEntity = new ExtendActFlowbusEntity();
+        flowbusEntity.setStatus(status);
+        flowbusEntity.setBusId(processTaskDto.getBusId());
+        flowbusService.updateByBusId(flowbusEntity);
     }
 
     @Override

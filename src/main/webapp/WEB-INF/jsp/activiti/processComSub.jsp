@@ -169,7 +169,37 @@
      * 退回到上一步
      */
     function backPrevious() {
-        alertMsg("该功能开发中,请后续关注");
+        var url ="${webRoot}/act/deal/backPreviousNode";
+        var params ={
+            'busId':processInfo.busId,
+            'taskId':processInfo.taskId,
+            'instanceId':processInfo.instanceId,
+            'defId':processInfo.defId,
+        };
+        var fileArr=processInfo.changeFields;
+        for(var i=0;i<fileArr.length;i++){
+            var fieldName = fileArr[i];
+            if (fieldName == ''){
+                continue;
+            }
+            //父级搜索表单
+            var fieldValue=$("#"+fieldName+"").val();
+            params[fieldName]=fieldValue;
+        }
+        var remark = $("#actFieldForm textarea[name='remark']").val();
+        params["remark"]=remark;
+        $.post(url,params,function (result) {
+            if(result.code == '0'){
+                alert(result,function () {
+                    //父级搜索 刷新待办列表
+                    $(parent.document.getElementById("main-container")).find("#searchForm").submit();
+                    closeThisWindow();
+
+                });
+            }else {
+                alertMsg(result.msg);
+            }
+        });
     }
 </script>
 
