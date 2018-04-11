@@ -907,6 +907,10 @@ public class ActModelerServiceImpl implements ActModelerService {
         //查询流程业务基本信息
         Task task = taskService.createTaskQuery().taskId(processTaskDto.getTaskId()).singleResult();
         ExtendActNodesetEntity nodesetEntity = nodesetService.queryByNodeId(task.getTaskDefinitionKey());
+        String nodeAction = nodesetEntity.getNodeAction();
+        if("2".equals(nodeAction)){//是否会签节点
+            throw new WorkflowException("当前节点为会签节点不允许驳回");
+        }
         ExtendActBusinessEntity actBus = businessService.queryByActKey(ActUtils.findProcessDefinitionEntityByTaskId(task.getId()).getKey());
 
         //获取上一个节点
@@ -1016,6 +1020,10 @@ public class ActModelerServiceImpl implements ActModelerService {
         Task task = taskService.createTaskQuery().taskId(processTaskDto.getTaskId()).singleResult();
         ExtendActNodesetEntity nodesetEntity = nodesetService.queryByNodeId(task.getTaskDefinitionKey());
         ExtendActBusinessEntity actBus = businessService.queryByActKey(ActUtils.findProcessDefinitionEntityByTaskId(task.getId()).getKey());
+        String nodeAction = nodesetEntity.getNodeAction();
+        if("2".equals(nodeAction)){//是否会签节点
+            throw new WorkflowException("当前节点为会签节点不允许驳回");
+        }
 
         ActivityImpl endNode = ActUtils.findActivitiImpl(processTaskDto.getTaskId(), "end");
         ActUtils.turnTransition(processTaskDto.getTaskId(),endNode.getId(),null,processTaskDto.getRemark());

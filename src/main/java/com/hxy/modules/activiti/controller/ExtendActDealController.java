@@ -381,7 +381,12 @@ public class ExtendActDealController {
             for (String key:parameterMap.keySet()){
                 params.put(key,parameterMap.get(key)[0]);
             }
-            actModelerService.endFailFolw(processTaskDto,params);
+            try{
+                actModelerService.endFailFolw(processTaskDto,params);
+            }catch (WorkflowException ex){
+                log.error("error:",ex);
+                return Result.ok(ex.getMsg());
+            }
             result=Result.ok("驳回到发起人,成功");
         } catch (Exception e) {
             e.printStackTrace();
