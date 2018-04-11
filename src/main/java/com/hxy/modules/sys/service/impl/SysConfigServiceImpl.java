@@ -1,7 +1,7 @@
 package com.hxy.modules.sys.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.hxy.modules.common.common.RRException;
+import com.hxy.modules.common.common.WorkflowException;
 import com.hxy.modules.sys.dao.SysConfigDao;
 import com.hxy.modules.oss.entity.SysConfigEntity;
 import com.hxy.modules.sys.service.SysConfigService;
@@ -72,7 +72,7 @@ public class SysConfigServiceImpl implements SysConfigService {
 		try {
 			return clazz.newInstance();
 		} catch (Exception e) {
-			throw new RRException("获取参数失败");
+			throw new WorkflowException("获取参数失败");
 		}
 	}
 }

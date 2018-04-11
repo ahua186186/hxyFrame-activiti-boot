@@ -1,7 +1,7 @@
 package com.hxy.modules.gen.utils;
 
 import com.hxy.modules.common.common.Constant;
-import com.hxy.modules.common.common.RRException;
+import com.hxy.modules.common.common.WorkflowException;
 import com.hxy.modules.common.utils.DateUtils;
 import com.hxy.modules.common.utils.Utils;
 import com.hxy.modules.gen.entity.ColumnEntity;
@@ -143,7 +143,7 @@ public class GenUtils {
                 try {
                     webDown(zip,template,tableEntity,tpl,context);
                 } catch (IOException e) {
-                    throw new RRException("渲染模板失败，表名：" + tableEntity.getTableName(), e);
+                    throw new WorkflowException("渲染模板失败，表名：" + tableEntity.getTableName(), e);
                 }
             }
 		}
@@ -218,7 +218,7 @@ public class GenUtils {
 		try {
 			return new PropertiesConfiguration("generator.properties");
 		} catch (ConfigurationException e) {
-			throw new RRException("获取配置文件失败，", e);
+			throw new WorkflowException("获取配置文件失败，", e);
 		}
 	}
 

@@ -2,7 +2,7 @@ package com.hxy.modules.common.validator;
 
 
 
-import com.hxy.modules.common.common.RRException;
+import com.hxy.modules.common.common.WorkflowException;
 import com.hxy.modules.common.exception.MyException;
 
 import javax.validation.ConstraintViolation;
@@ -27,10 +27,10 @@ public class ValidatorUtils {
      * 校验对象
      * @param object        待校验对象
      * @param groups        待校验的组
-     * @throws RRException  校验不通过，则报RRException异常
+     * @throws WorkflowException  校验不通过，则报RRException异常
      */
     public static void validateEntity(Object object, Class<?>... groups)
-            throws RRException {
+            throws WorkflowException {
         Set<ConstraintViolation<Object>> constraintViolations = validator.validate(object, groups);
         if (!constraintViolations.isEmpty()) {
         	ConstraintViolation<Object> constraint = (ConstraintViolation<Object>)constraintViolations.iterator().next();

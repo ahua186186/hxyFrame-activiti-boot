@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hxy.modules.common.common.Constant;
+import com.hxy.modules.common.common.WorkflowException;
 import com.hxy.modules.common.exception.MyException;
 import com.hxy.modules.common.utils.SpringContextUtils;
 import com.hxy.modules.common.utils.StringUtils;
@@ -370,7 +371,7 @@ public class ActUtils {
      * @return TaskEntity
      * @throws Exception
      */
-    private static TaskEntity findTaskById(String taskId) throws Exception {
+    public static TaskEntity findTaskById(String taskId) throws WorkflowException {
         TaskEntity task = (TaskEntity) taskService.createTaskQuery().taskId(
                 taskId).singleResult();
         if (task == null) {
@@ -1004,23 +1005,23 @@ public class ActUtils {
 
     /**
      * 分支路由结束点，需要查询历史任务出现过的分支结点(取上一个任务节点)
-     * @param ac exclusiveGateway节点
-     * @param processDefinitionKey
-     * @param processInstanceId
-     * @return
+                    * @param ac exclusiveGateway节点
+                    * @param processDefinitionKey
+                    * @param processInstanceId
+                    * @return
      */
-    public static PvmActivity getExclusiveActiviti(PvmActivity ac, String processDefinitionKey, String processInstanceId){
-        //上一个节点为条件路由,则查询任务历史，查询历史最近走过的分支节点
-        List<PvmTransition> exclusiveEnds = ac.getIncomingTransitions();
-        //保存分支路由所有节点的最新记录
-        List<HistoricTaskInstance> taskList=new ArrayList<HistoricTaskInstance>();
-        //条件路由结束
-        for(PvmTransition p:exclusiveEnds){
-            PvmActivity pvmActivity = p.getSource();
-            //根据分支路由的节点ID,查询历史任务中最新记录的节点ID
-            HistoricTaskInstance taskInstance = historyService.createHistoricTaskInstanceQuery().processDefinitionKey(processDefinitionKey)
-                    .processInstanceId(processInstanceId).taskDefinitionKey(pvmActivity.getId()).orderByTaskCreateTime().desc().list().get(0);
-            //有记录
+            public static PvmActivity getExclusiveActiviti(PvmActivity ac, String processDefinitionKey, String processInstanceId){
+                //上一个节点为条件路由,则查询任务历史，查询历史最近走过的分支节点
+                List<PvmTransition> exclusiveEnds = ac.getIncomingTransitions();
+                //保存分支路由所有节点的最新记录
+                List<HistoricTaskInstance> taskList=new ArrayList<HistoricTaskInstance>();
+                //条件路由结束
+                for(PvmTransition p:exclusiveEnds){
+                    PvmActivity pvmActivity = p.getSource();
+                    //根据分支路由的节点ID,查询历史任务中最新记录的节点ID
+                    HistoricTaskInstance taskInstance = historyService.createHistoricTaskInstanceQuery().processDefinitionKey(processDefinitionKey)
+                            .processInstanceId(processInstanceId).taskDefinitionKey(pvmActivity.getId()).orderByTaskCreateTime().desc().list().get(0);
+                    //有记录
             if(taskInstance != null && !StringUtils.isEmpty(taskInstance.getId())){
                 taskList.add(taskInstance);
             }

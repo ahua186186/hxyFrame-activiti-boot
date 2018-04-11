@@ -1,6 +1,6 @@
 package com.hxy.modules.quartz.utils;
 
-import com.hxy.modules.common.common.RRException;
+import com.hxy.modules.common.common.WorkflowException;
 import com.hxy.modules.common.utils.SpringContextUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.ReflectionUtils;
@@ -39,7 +39,7 @@ public class ScheduleRunnable implements Runnable {
 				method.invoke(target);
 			}
 		}catch (Exception e) {
-			throw new RRException("执行定时任务失败", e);
+			throw new WorkflowException("执行定时任务失败", e);
 		}
 	}
 

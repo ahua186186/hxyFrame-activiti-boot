@@ -2,7 +2,7 @@ package com.hxy.modules.oss.cloud;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.hxy.modules.common.common.RRException;
+import com.hxy.modules.common.common.WorkflowException;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.request.UploadFileRequest;
@@ -53,7 +53,7 @@ public class QcloudCloudStorageService extends CloudStorageService{
 
         JSONObject jsonObject = JSON.parseObject(response);
         if(jsonObject.getIntValue("code") != 0) {
-            throw new RRException("文件上传失败，" + jsonObject.getString("message"));
+            throw new WorkflowException("文件上传失败，" + jsonObject.getString("message"));
         }
 
         return config.getQcloudDomain() + path;
@@ -65,7 +65,7 @@ public class QcloudCloudStorageService extends CloudStorageService{
             byte[] data = IOUtils.toByteArray(inputStream);
             return this.upload(data, path);
         } catch (IOException e) {
-            throw new RRException("上传文件失败", e);
+            throw new WorkflowException("上传文件失败", e);
         }
     }
 

@@ -34,9 +34,11 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -304,7 +306,7 @@ public class ActModelerServiceImpl implements ActModelerService {
     @Override
     public Page<UserEntity> turnWindowPage(int pageNum, UserEntity userEntity) {
         PageHelper.startPage(pageNum,Constant.pageSize);
-        //actExtendDao.turnWindowList(userEntity); //未改
+        actExtendDao.turnWindowList(userEntity); //未改
         return PageHelper.endPage();
     }
 
@@ -585,7 +587,19 @@ public class ActModelerServiceImpl implements ActModelerService {
         }
         //根据流程定义id查询流程定义key
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processTaskDto.getDefId()).singleResult();
+        //test please ignore start
         Task task = taskService.createTaskQuery().taskId(processTaskDto.getTaskId()).singleResult();
+        String activitiId = task.getTaskDefinitionKey();
+
+        ActivityImpl currActivity = ((ProcessDefinitionImpl) processDefinition)
+                .findActivity(activitiId);
+
+        ProcessDefinitionEntity def = (ProcessDefinitionEntity) ((RepositoryServiceImpl)repositoryService).getDeployedProcessDefinition(processDefinition.getId());
+        List<ActivityImpl> activitiList = def.getActivities();
+        for(ActivityImpl act : activitiList){
+            System.out.println("活动节点：" + act.getProperty("name"));
+        }
+        //test please ignore end
         //保存审批信息
         String remark="";
         if(StringUtils.isNotEmpty(processTaskDto.getRemark())){

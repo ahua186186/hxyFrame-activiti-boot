@@ -2,7 +2,7 @@ package com.hxy.modules.oss.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.hxy.modules.common.common.Constant;
-import com.hxy.modules.common.common.RRException;
+import com.hxy.modules.common.common.WorkflowException;
 import com.hxy.modules.common.utils.PageUtils;
 import com.hxy.modules.common.utils.Query;
 import com.hxy.modules.common.utils.Result;
@@ -105,7 +105,7 @@ public class SysOssController {
 	@RequiresPermissions("sys:oss:all")
 	public Result upload(@RequestParam("file") MultipartFile file) throws Exception {
 		if (file.isEmpty()) {
-			throw new RRException("上传文件不能为空");
+			throw new WorkflowException("上传文件不能为空");
 		}
 		//上传文件
 		String url = OSSFactory.build().upload(file.getBytes());

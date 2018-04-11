@@ -1,16 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="/WEB-INF/jsp/include/taglib.jsp" %>
 <form action="" id="actFieldForm">
-    <%--<div class="row" name="isagreeShow">
+    <div class="row" name="isagreeShow">
         <div class="form-group col-sm-6 col-md-5 ">
             <label class="col-sm-3 control-label no-padding-right">是否同意:</label>
             <div class="col-sm-9">
                 <span class="col-xs-11 block input-icon input-icon-right">
-                    <tag:select nameKey="YES_NO" name="isagree" clazz="form-control" />
+                    <tag:select nameKey="YES_NO" id="isAgree" name="isAgree" clazz="form-control" />
                 </span>
             </div>
         </div>
-    </div>--%>
+    </div>
     <div class="row">
         <div class="form-group col-sm-8 ">
             <label class="control-label col-sm-2">审批意见:</label>
@@ -93,6 +93,7 @@
         if(vars!=null){
             for(var i=0;i<vars.length;i++){
                 var val=$("#"+vars[i]+"").val();
+                alert(val);
                 varValue+=val+",";
                 varName+=vars[i]+",";
             }
