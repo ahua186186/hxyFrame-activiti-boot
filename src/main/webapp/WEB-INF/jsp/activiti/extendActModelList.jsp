@@ -106,8 +106,9 @@
             scrollbar: true,
             type: 2,
             title : ["流程图设计" , true],
-            area: ['90%', '90%'], //宽高
+            area: ['100%', '100%'], //宽高
             content: [url,'on'],
+            maxmin : true,
             shadeClose : true,
         });
     }
