@@ -26,7 +26,7 @@
         <button class="layui-btn layui-btn-danger" type="button" onclick="backStartUser()">驳回到发起人</button>
         <button class="layui-btn layui-btn-danger" type="button" onclick="backPrevious()">退回上一步</button>
         <button class="layui-btn layui-btn-warm" type="button" onclick="turnToDo()">转办</button>
-        <button class="layui-btn layui-btn-danger" type="button" onclick="backPrevious()">跳转</button>
+        <button class="layui-btn layui-btn-danger" type="button" onclick="jump()">跳转</button>
         <button class="layui-btn layui-btn-primary" type="button" onclick="closeThisWindow()">关 闭</button>
     </div>
 </form>
@@ -170,6 +170,43 @@
      */
     function backPrevious() {
         var url ="${webRoot}/act/deal/backPreviousNode";
+        var params ={
+            'busId':processInfo.busId,
+            'taskId':processInfo.taskId,
+            'instanceId':processInfo.instanceId,
+            'defId':processInfo.defId,
+        };
+        var fileArr=processInfo.changeFields;
+        for(var i=0;i<fileArr.length;i++){
+            var fieldName = fileArr[i];
+            if (fieldName == ''){
+                continue;
+            }
+            //父级搜索表单
+            var fieldValue=$("#"+fieldName+"").val();
+            params[fieldName]=fieldValue;
+        }
+        var remark = $("#actFieldForm textarea[name='remark']").val();
+        params["remark"]=remark;
+        $.post(url,params,function (result) {
+            if(result.code == '0'){
+                alert(result,function () {
+                    //父级搜索 刷新待办列表
+                    $(parent.document.getElementById("main-container")).find("#searchForm").submit();
+                    closeThisWindow();
+
+                });
+            }else {
+                alertMsg(result.msg);
+            }
+        });
+    }
+
+    /**
+     * 跳转
+     */
+    function jump() {
+        var url ="${webRoot}/act/deal/jumpToDo";
         var params ={
             'busId':processInfo.busId,
             'taskId':processInfo.taskId,

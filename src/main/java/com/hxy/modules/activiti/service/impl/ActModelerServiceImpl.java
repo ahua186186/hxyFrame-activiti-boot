@@ -901,16 +901,16 @@ public class ActModelerServiceImpl implements ActModelerService {
         if(StringUtils.isEmpty(processTaskDto.getInstanceId())){
             throw new MyException("流程实例不能为空");
         }
-        if(StringUtils.isEmpty(processTaskDto.getInstanceId())){
+        if(StringUtils.isEmpty(processTaskDto.getBusId())){
             throw new MyException("业务id不能为空");
         }
         //查询流程业务基本信息
         Task task = taskService.createTaskQuery().taskId(processTaskDto.getTaskId()).singleResult();
         ExtendActNodesetEntity nodesetEntity = nodesetService.queryByNodeId(task.getTaskDefinitionKey());
         String nodeAction = nodesetEntity.getNodeAction();
-        if("2".equals(nodeAction)){//是否会签节点
+        /*if("2".equals(nodeAction)){//是否会签节点
             throw new WorkflowException("当前节点为会签节点不允许驳回");
-        }
+        }*/
         ExtendActBusinessEntity actBus = businessService.queryByActKey(ActUtils.findProcessDefinitionEntityByTaskId(task.getId()).getKey());
 
         //获取上一个节点
@@ -1066,7 +1066,7 @@ public class ActModelerServiceImpl implements ActModelerService {
         if(StringUtils.isEmpty(processTaskDto.getInstanceId())){
             throw new MyException("流程实例不能为空");
         }
-        if(StringUtils.isEmpty(processTaskDto.getInstanceId())){
+        if(StringUtils.isEmpty(processTaskDto.getBusId())){
             throw new MyException("业务id不能为空");
         }
         //转办任务
@@ -1092,5 +1092,34 @@ public class ActModelerServiceImpl implements ActModelerService {
         tasklogEntity.setAdvanceId(toUserId);
         tasklogEntity.setCreateTime(task.getCreateTime());
         tasklogService.save(tasklogEntity);
+    }
+
+    @Override
+    @Transactional
+    public void jump(ProcessTaskDto processTaskDto,String targetTaskDefinitionKey,Map<String,Object> map) throws Exception{
+        if(StringUtils.isEmpty(processTaskDto.getTaskId())){
+            throw new MyException("任务id不能为空");
+        }
+        if(StringUtils.isEmpty(processTaskDto.getDefId())){
+            throw new MyException("流程定义id不能为空");
+        }
+        if(StringUtils.isEmpty(processTaskDto.getInstanceId())){
+            throw new MyException("流程实例不能为空");
+        }
+        if(StringUtils.isEmpty(processTaskDto.getBusId())){
+            throw new MyException("业务id不能为空");
+        }
+        //查询流程业务基本信息
+        Task task = taskService.createTaskQuery().taskId(processTaskDto.getTaskId()).singleResult();
+        ExtendActNodesetEntity nodesetEntity = nodesetService.queryByNodeId(task.getTaskDefinitionKey());
+        ExtendActBusinessEntity actBus = businessService.queryByActKey(ActUtils.findProcessDefinitionEntityByTaskId(task.getId()).getKey());
+        String nodeAction = nodesetEntity.getNodeAction();
+
+        if("2".equals(nodeAction)){//是否会签节点
+            throw new WorkflowException("当前节点为会签节点不允许驳回");
+        }
+
+        ActivitiUtil.jump(processTaskDto.getTaskId(),targetTaskDefinitionKey);
+
     }
 }

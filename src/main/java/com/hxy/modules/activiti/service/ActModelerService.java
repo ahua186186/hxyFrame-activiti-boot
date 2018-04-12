@@ -3,6 +3,7 @@ package com.hxy.modules.activiti.service;
 import com.hxy.modules.activiti.dto.ProcessNodeDto;
 import com.hxy.modules.activiti.dto.ProcessTaskDto;
 import com.hxy.modules.activiti.entity.ExtendActModelEntity;
+import com.hxy.modules.common.common.WorkflowException;
 import com.hxy.modules.common.page.Page;
 import com.hxy.modules.common.utils.Result;
 import com.hxy.modules.sys.entity.UserEntity;
@@ -154,8 +155,13 @@ public interface ActModelerService {
      */
     void turnToDo(ProcessTaskDto processTaskDto, String toUserId);
 
-
-
+    /**
+     * 跳转
+     * @param processTaskDto
+     * @param targetTaskDefinitionKey
+     * @param map
+     */
+    void jump(ProcessTaskDto processTaskDto,String targetTaskDefinitionKey,Map<String,Object> map)throws Exception;
 
 
 

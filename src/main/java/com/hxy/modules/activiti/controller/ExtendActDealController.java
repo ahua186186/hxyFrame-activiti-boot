@@ -387,10 +387,10 @@ public class ExtendActDealController {
                 log.error("error:",ex);
                 return Result.ok(ex.getMsg());
             }
-            result=Result.ok("驳回到发起人,成功");
+            result=Result.ok("驳回到发起人成功");
         } catch (Exception e) {
             e.printStackTrace();
-            result=Result.error("驳回到发起人,失败");
+            result=Result.error("驳回到发起人失败");
         }
         return result;
     }
@@ -416,13 +416,44 @@ public class ExtendActDealController {
                 log.error("error:",ex);
                 return Result.ok(ex.getMsg());
             }
-            result=Result.ok("驳回到上一步,成功");
+            result=Result.ok("驳回到上一步成功");
         } catch (Exception e) {
             e.printStackTrace();
-            result=Result.error("驳回到上一步,失败");
+            result=Result.error("驳回到上一步失败");
         }
         return result;
     }
+
+    /**
+     * 跳转，重新编辑提交
+     * @param processTaskDto
+     * @return
+     */
+    @RequestMapping(value = "jumpToDo",method = RequestMethod.POST)
+    @ResponseBody
+    public Result jumpToDo(ProcessTaskDto processTaskDto,String targetTaskDefinitionKey,HttpServletRequest request){
+        Result result = null;
+        try {
+            Map<String, String[]> parameterMap = request.getParameterMap();
+            Map<String,Object> params = new LinkedCaseInsensitiveMap<>();
+            for (String key:parameterMap.keySet()){
+                params.put(key,parameterMap.get(key)[0]);
+            }
+            try {
+                targetTaskDefinitionKey="sid-7BE97040-9CC7-4BEE-B04F-03FF2E5F478F";
+                actModelerService.jump(processTaskDto,targetTaskDefinitionKey,params);
+            }catch (WorkflowException ex){
+                log.error("error:",ex);
+                return Result.ok(ex.getMsg());
+            }
+            result=Result.ok("跳转成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            result=Result.error("跳转失败");
+        }
+        return result;
+    }
+
 
     /**
      * 转到转办页面
