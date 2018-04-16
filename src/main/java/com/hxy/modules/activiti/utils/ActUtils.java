@@ -88,6 +88,7 @@ public class ActUtils {
         characteristics.setSequential(false);
         //设置条件（暂时处理成，全部会签完转下步）
         characteristics.setCompletionCondition("${nrOfCompletedInstances==nrOfInstances}");
+        //自定义会签规则：可以参考 http://man1900.iteye.com/blog/1607753
 
         userTask.setLoopCharacteristics(characteristics);
         //保存
