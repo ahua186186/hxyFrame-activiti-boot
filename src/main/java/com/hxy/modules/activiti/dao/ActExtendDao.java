@@ -58,6 +58,13 @@ public interface ActExtendDao {
     List<ProcessTaskDto> findMyUpcomingPage(Map<String, Object> params);
 
     /**
+     * 我的待办组任务列表
+     * @param params
+     * @return
+     */
+    List<ProcessTaskDto> findMyGroupTaskPage(Map<String, Object> params);
+
+    /**
      * 我的已办列表
      * @param params
      * @return

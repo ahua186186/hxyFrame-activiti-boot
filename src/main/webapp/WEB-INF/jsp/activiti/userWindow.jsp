@@ -42,7 +42,7 @@
 								<tr id="user_${user.id }" >
 									<td>
 										<c:if test="${flag == '1'}">
-											<input type="radio"  name="user" value="${user.id}">
+											<input type="checkbox"  name="user" value="${user.id}">
 										</c:if>
 										<c:if test="${flag == '2'}">
 											<input type="checkbox" name="user"  value="${user.id}">

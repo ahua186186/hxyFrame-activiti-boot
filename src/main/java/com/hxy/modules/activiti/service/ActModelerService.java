@@ -24,6 +24,13 @@ import java.util.Set;
 
 public interface ActModelerService {
     /**
+     * 查询我的组任务列表，待认领，claim
+     * @param params
+     * @param pageNum
+     * @return
+     */
+    Page<ExtendActModelEntity> findMyGroupTaskPage(Map<String,Object> params,int pageNum);
+    /**
      * 创建模型
      * @param extendActModelEntity
      * @return

@@ -487,6 +487,17 @@ public class ActModelerServiceImpl implements ActModelerService {
     }
 
     @Override
+    public Page<ExtendActModelEntity> findMyGroupTaskPage(Map<String,Object> params,int pageNum) {
+        PageHelper.startPage(pageNum, Constant.pageSize);
+        //超级管理员可查看所有待办
+        if(!Constant.SUPERR_USER.equals(UserUtils.getCurrentUserId())){
+            params.put("dealId",UserUtils.getCurrentUserId());
+        }
+        actExtendDao.findMyGroupTaskPage(params);
+        return PageHelper.endPage();
+    }
+
+    @Override
     public int myUpcomingCount() {
         Map<String,Object> params = new HashMap<>();
         //超级管理员可查看所有待办
@@ -495,8 +506,12 @@ public class ActModelerServiceImpl implements ActModelerService {
         }
         int count = 0;
         List<ProcessTaskDto> myUpcomingPage = actExtendDao.findMyUpcomingPage(params);
+        List<ProcessTaskDto> myGroupTaskPage = actExtendDao.findMyGroupTaskPage(params);
         if(myUpcomingPage != null){
             count=myUpcomingPage.size();
+        }
+        if(myGroupTaskPage != null){
+            count= count + myGroupTaskPage.size();
         }
         return count;
     }
@@ -748,10 +763,38 @@ public class ActModelerServiceImpl implements ActModelerService {
                     if(isOver){
                         //如果会签已经完成，则记录下一任务日志
                         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processTaskDto.getInstanceId()).list();
+                        String nextUserIds = processTaskDto.getNextUserIds();
+                        List<String> userIds = Arrays.asList(nextUserIds.split(","));
                         for (Task t:tasks){
-                            //设置下一个任务的办理人
-                            // TODO: 2017/8/10 如果是下个节点是并行结果，那么这里需要处理下 待开发
-                            taskService.setAssignee(t.getId(), processTaskDto.getNextUserIds());
+                            //添加组任务和候选人，待开发
+                            //taskService.addCandidateGroup(taskId,groupId);
+                            if(userIds.size()>1){//组任务，待开发
+                                for(String userId : userIds) {
+                                    taskService.addCandidateUser(t.getId(), userId);
+                                    //模拟签收
+                                    //taskService.claim(t.getId(),processTaskDto.getNextUserIds());
+                                }
+                                //查询用户持有组任务
+                                /**
+                                 * 查询SQL:
+                                 * select distinct RES.* from
+                                 ACT_RU_TASK RES inner join
+                                 ACT_RU_IDENTITYLINK I
+                                 on I.TASK_ID_ = RES.ID_ WHERE RES.ASSIGNEE_ is null and I.TYPE_ = 'candidate' and ( I.USER_ID_ = ? ) order by RES.ID_ asc LIMIT ? OFFSET ?
+                                 *
+                                 TaskQuery taskQuery = processEngine.getTaskService().createTaskQuery();
+                                 List<Task> list = taskQuery.taskCandidateUser("小A").list();
+                                 if(null!=list && list.size()>=0){
+                                 for(Task task : list){
+                                 System.out.println("任务ID："+task.getId() + "任务分派人:"+task.getAssignee());//未分派任务的Assignee为空
+                                 }
+                                 }
+                                 */
+                            }else{//个人任务
+                                //设置下一个任务的办理人
+                                // TODO: 2017/8/10 如果是下个节点是并行结果，那么这里需要处理下 待开发
+                                taskService.setAssignee(t.getId(), processTaskDto.getNextUserIds());
+                            }
                             ExtendActTasklogEntity tasklogEntity = new ExtendActTasklogEntity();
                             tasklogEntity.setId(Utils.uuid());
                             tasklogEntity.setBusId(processTaskDto.getBusId());

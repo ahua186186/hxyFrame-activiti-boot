@@ -221,8 +221,13 @@ public class ExtendActDealController {
         Map<String,Object> params = new HashMap<>();
         params.put("code",code);
         params.put("busId",busId);
-        Page<ExtendActModelEntity> page = actModelerService.findMyUpcomingPage(params, pageNum);
-        model.addAttribute("page",page);
+        //个人任务
+        Page<ExtendActModelEntity> page4myUpcoming = actModelerService.findMyUpcomingPage(params, pageNum);
+        //组任务
+        Page<ExtendActModelEntity> page4GroupTask = actModelerService.findMyGroupTaskPage(params, pageNum);
+        //添加待认领的组任务,这个地方分页不知道如何处理，没太大影响，这就是放一起的代价，前端可以分开显示，单独查询组任务列表。
+        page4myUpcoming.getResult().addAll(page4GroupTask.getResult());
+        model.addAttribute("page",page4myUpcoming);
         model.addAttribute("code",code);
         model.addAttribute("busId",busId);
         return "activiti/myUpcoming";
