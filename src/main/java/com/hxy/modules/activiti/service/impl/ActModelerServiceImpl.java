@@ -777,7 +777,16 @@ public class ActModelerServiceImpl implements ActModelerService {
         tasklogEntity.setAppAction(Constant.ActTaskResult.AGREE.getValue());
         int i = tasklogService.updateByTaskId(tasklogEntity);
         if(i<1){
-            throw new MyException("更新任务日志失败");
+            tasklogEntity.setId(Utils.uuid());
+            tasklogEntity.setBusId(processTaskDto.getBusId());
+            tasklogEntity.setDefId(processTaskDto.getDefId());
+            tasklogEntity.setInstanceId(processTaskDto.getInstanceId());
+            tasklogEntity.setTaskId(task.getId());
+            tasklogEntity.setTaskName(task.getName());
+            tasklogEntity.setAdvanceId(processTaskDto.getNextUserIds());
+            tasklogEntity.setCreateTime(task.getCreateTime());
+            tasklogService.save(tasklogEntity);
+            //throw new MyException("更新任务日志失败");
         }
     }
 
