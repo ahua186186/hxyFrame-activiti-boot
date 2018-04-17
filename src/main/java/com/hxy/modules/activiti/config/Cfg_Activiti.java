@@ -31,6 +31,13 @@ public class Cfg_Activiti {
         processEngineConfiguration.setActivityFontName("宋体");
         processEngineConfiguration.setAnnotationFontName("宋体");
         processEngineConfiguration.setLabelFontName("宋体");
+        //邮件任务邮箱设置
+        /*processEngineConfiguration.setMailServerHost();
+        processEngineConfiguration.setMailServerPort();
+        processEngineConfiguration.setMailServerDefaultFrom();
+        processEngineConfiguration.setMailServerUsername();
+        processEngineConfiguration.setMailServerPassword();
+        processEngineConfiguration.setMailServerUseSSL(true);*/
 
         return processEngineConfiguration;
     }
