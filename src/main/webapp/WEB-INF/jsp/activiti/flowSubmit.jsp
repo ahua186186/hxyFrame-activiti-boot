@@ -159,10 +159,11 @@
     function clickSubmit(){
         confirm("确认提交流程吗?",function () {
             var userIds = $("#userTab tbody input[name='userIds']").val();
-            if( (typeof(userIds) == 'undefined' || userIds.length<1) && flowInfo.nodeType!="5"){
+            //非用户活动不需要选择审批用户
+            /*if( (typeof(userIds) == 'undefined' || userIds.length<1) && flowInfo.nodeType!="5"){
                 alertMsg("至少选择一个审批用户");
                 return false;
-            }
+            }*/
             var params="nextUserIds="+userIds+"&defId="+flowInfo.defid+"&actKey="+flowInfo.actKey+"&busId="+flowInfo.busId+"&nodeType="+flowInfo.nodeType;
             var url = "${webRoot}/act/deal/startFlow";
             $.post(url,params,function callback(result){

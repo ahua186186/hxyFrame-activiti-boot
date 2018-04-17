@@ -36,7 +36,6 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -47,6 +46,8 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -72,6 +73,7 @@ import java.util.*;
 @Service
 public class ActModelerServiceImpl implements ActModelerService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ActModelerServiceImpl.class);
     @Resource(name = "repositoryService")
     private RepositoryService repositoryService;
 
@@ -195,6 +197,10 @@ public class ActModelerServiceImpl implements ActModelerService {
                     tempmap.put("treeName","结束");
                 }
                 tempmap.put("icon", contextPath+"/images/sys/endnone.png");
+            } else if(flowElement instanceof ServiceTask){
+                tempmap.put("type", "6");
+                tempmap.put("treeName",flowElement.getName());
+                tempmap.put("icon", contextPath+"/images/sys/typeservice.png");
             }
             String pid="0";
             if(flowElement instanceof SequenceFlow){
@@ -335,9 +341,10 @@ public class ActModelerServiceImpl implements ActModelerService {
         if(StringUtils.isEmpty(processTaskDto.getNodeType())){
             throw new MyException("节点类型不能为空");
         }
-        if(StringUtils.isEmpty(processTaskDto.getNextUserIds())&&!"5".equals(processTaskDto.getNodeType())){
+        //非用户活动不需要处理人。
+        /*if(StringUtils.isEmpty(processTaskDto.getNextUserIds())&&!"5".equals(processTaskDto.getNodeType())){
             throw new MyException("处理人不能为空");
-        }
+        }*/
         //查询流程业务关联信息
         ExtendActBusinessEntity businessEntity = businessService.queryByActKey(processTaskDto.getActKey());
         Class<?> clazz = Class.forName(businessEntity.getClassurl());
@@ -351,9 +358,12 @@ public class ActModelerServiceImpl implements ActModelerService {
         Method[] methods = clazz.getDeclaredMethods();
         //读取需要判断的条件字段，做为流程变量
         Map<String, Object> variables = new HashMap<String, Object>();
+        if(busInfo !=null){
+            variables.put("busInfo",busInfo);
+        }
         for (Method method:methods){
             ActField actField = method.getAnnotation(ActField.class);
-            if(actField != null && actField.isJudg()){
+           if(actField != null && actField.isJudg()){
                 String flidName = method.getName().replace("get","");
                 variables.put(flidName,busInfo.get(flidName));
             }
@@ -461,7 +471,8 @@ public class ActModelerServiceImpl implements ActModelerService {
                 }
             }
         }else {
-            throw new MyException("流程设计错误!");
+            //throw new MyException("流程设计错误!");
+            logger.info("processTaskDto.getNodeType()：" + processTaskDto.getNodeType());
         }
         //保存扩展任务日志
         tasklogService.save(tasklog);
