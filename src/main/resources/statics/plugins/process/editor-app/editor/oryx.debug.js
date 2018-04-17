@@ -21671,10 +21671,7 @@ ORYX.Plugins.AddDocker = Clazz.extend({
             });
             this.setEnableRemove(false);
         }
-		// by lys update start  
-		if (!(!!window.ActiveXObject || "ActiveXObject" in window)){
-			document.body.style.cursor = 'default';
-		}
+		document.body.style.cursor = 'default';
 	},
     
     // Options: edge (required), position (required if add), docker (required if delete)

@@ -261,8 +261,7 @@ KISBPM.TOOLBAR = {
         },
         
         closeEditor: function(services) {
-        	lys_fun_modeler("2");
-//        	window.location.href = "./";
+        	window.location.href = "/model-list.html";
         },
         
         /**
@@ -327,7 +326,7 @@ var SaveModelCtrl = [ '$rootScope', '$scope', '$http', '$route', '$location',
 
     $scope.saveAndClose = function () {
     	$scope.save(function() {
-    		window.location.href = "./";
+    		window.location.href = "/model-list.html";
     	});
     };
     $scope.save = function (successCallback) {
@@ -368,11 +367,7 @@ var SaveModelCtrl = [ '$rootScope', '$scope', '$http', '$route', '$location',
 
         // Parse dom to string
         var svgDOM = DataManager.serialize(svgClone);
-        // by lys add start
-        svgDOM = svgDOM.replace(/marker-start="url\("#/g,"marker-start=\"url(#").replace(/start"\)"/g,"start\)\"");
-        svgDOM = svgDOM.replace(/marker-mid="url\("#/g,"marker-mid=\"url(#").replace(/mid"\)"/g,"mid\)\"");
-        svgDOM = svgDOM.replace(/marker-end="url\("#/g,"marker-end=\"url(#").replace(/end"\)"/g,"end\)\"");
-        // by lys add end
+
         var params = {
             json_xml: json,
             svg_xml: svgDOM,
@@ -422,7 +417,7 @@ var SaveModelCtrl = [ '$rootScope', '$scope', '$http', '$route', '$location',
                 if (successCallback) {
                     successCallback();
                 }
-                lys_fun_modeler("1");
+
             })
             .error(function (data, status, headers, config) {
                 $scope.error = {};

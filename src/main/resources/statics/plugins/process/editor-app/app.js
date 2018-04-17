@@ -48,7 +48,7 @@ activitiModeler
             suffix: '.json'
         });
 
-        $translateProvider.preferredLanguage('zh_CN');
+        $translateProvider.preferredLanguage('en');
 
         // remember language
         $translateProvider.useCookieStorage();
@@ -96,9 +96,8 @@ activitiModeler
             function fetchModel(modelId) {
 
                 var modelUrl = KISBPM.URL.getModel(modelId);
-                // by lys update start
-//                $http({method: 'GET', url: modelUrl }).
-                $http({method: 'GET', url: modelUrl, headers: {'Pragma': 'no-cache','Cache-Control':'no-cache'} }).
+
+                $http({method: 'GET', url: modelUrl}).
                     success(function (data, status, headers, config) {
                         $rootScope.editor = new ORYX.Editor(data);
                         $rootScope.modelData = angular.fromJson(data);
@@ -240,24 +239,8 @@ activitiModeler
 	                	}
 
 	                    var totalAvailable = jQuery(window).height() - offset.top - mainHeader.height() - 21;
-	                    //canvas.height(totalAvailable - propSectionHeight);
-                        //jQuery('#paletteSection').height(totalAvailable);
-                        var browerVersion = {};
-                        var ua = navigator.userAgent.toLowerCase();
-                        var s;
-                        (s = ua.match(/msie ([\d.]+)/)) ? browerVersion.ie = s[1] :
-                        (s = ua.match(/firefox\/([\d.]+)/)) ? browerVersion.firefox = s[1] :
-                        (s = ua.match(/chrome\/([\d.]+)/)) ? browerVersion.chrome = s[1] :
-                        (s = ua.match(/opera.([\d.]+)/)) ? browerVersion.opera = s[1] :
-                        (s = ua.match(/version\/([\d.]+).*safari/)) ? browerVersion.safari = s[1] : 0;
-                        var $paletteSection = jQuery('#paletteSection');
-                        if(browerVersion.safari){    //处理safari 高度问题
-                            canvas.height(totalAvailable+40);
-                            $paletteSection.height(totalAvailable+40);
-                        }else{
-                            canvas.height(totalAvailable);
-                            $paletteSection.height(totalAvailable);
-                        }
+	                    canvas.height(totalAvailable - propSectionHeight);
+	                    jQuery('#paletteSection').height(totalAvailable);
 
 	                    // Update positions of the resize-markers, according to the canvas
 

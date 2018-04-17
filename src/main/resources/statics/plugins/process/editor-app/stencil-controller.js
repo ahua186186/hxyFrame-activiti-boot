@@ -64,26 +64,11 @@ angular.module('activitiModeler')
              */
             $http({method: 'GET', url: KISBPM.URL.getStencilSet()}).success(function (data, status, headers, config) {
 
-            	/*var quickMenuDefinition = ['UserTask', 'EndNoneEvent', 'ExclusiveGateway',
+            	var quickMenuDefinition = ['UserTask', 'EndNoneEvent', 'ExclusiveGateway', 
             	                           'CatchTimerEvent', 'ThrowNoneEvent', 'TextAnnotation',
-            	                           'SequenceFlow', 'Association'];*/
-
-                var quickMenuDefinition = ['UserTask','EndNoneEvent', 'ExclusiveGateway', 'SequenceFlow'];
-
-            	//var ignoreForPaletteDefinition = ['SequenceFlow', 'MessageFlow', 'Association', 'DataAssociation', 'DataStore', 'SendTask'];
-                //var ignoreForPaletteDefinition = ['MessageFlow', 'Association', 'DataAssociation', 'DataStore', 'SendTask'];
-
-                var ignoreForPaletteDefinition = ['StartTimerEvent', 'StartSignalEvent', 'StartMessageEvent', 'StartErrorEvent',
-                    'ServiceTask', 'ScriptTask', 'BusinessRule', 'ReceiveTask', 'ManualTask', 'MailTask', 'CamelTask',
-                    'MuleTask', 'SendTask', 'SubProcess', 'EventSubProcess', 'CallActivity', 'ParallelGateway', 'InclusiveGateway',
-                    'EventGateway', 'BoundaryErrorEvent', 'BoundaryTimerEvent', 'BoundarySignalEvent', 'BoundaryMessageEvent',
-                    'BoundaryCancelEvent', 'BoundaryCompensationEvent', 'CatchTimerEvent', 'CatchSignalEvent', 'CatchMessageEvent',
-                    'ThrowNoneEvent', 'ThrowSignalEvent', 'EndErrorEvent', 'EndCancelEvent', 'EndTerminateEvent', 'Pool',
-                    'Lane', 'MessageFlow', 'Association', 'DataAssociation', 'TextAnnotation', 'DataStore'
-                ];
-                //var ignoreForPaletteDefinition=[];
-
-                var quickMenuItems = [];
+            	                           'SequenceFlow', 'Association'];
+            	var ignoreForPaletteDefinition = ['SequenceFlow', 'MessageFlow', 'Association', 'DataAssociation', 'DataStore', 'SendTask'];
+            	var quickMenuItems = [];
             	
             	var morphRoles = [];
                 for (var i = 0; i < data.rules.morphingRules.length; i++) 
@@ -199,10 +184,6 @@ angular.module('activitiModeler')
                 
                 for (var i = 0; i < stencilItemGroups.length; i++) 
                 {
-                    if(i==0){
-                        //modify by xingx
-                        stencilItemGroups[i].expanded = true;
-                    }
                 	if (stencilItemGroups[i].paletteItems && stencilItemGroups[i].paletteItems.length == 0)
                 	{
                 		stencilItemGroups[i].visible = false;

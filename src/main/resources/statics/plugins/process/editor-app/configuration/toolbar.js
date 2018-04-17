@@ -87,7 +87,7 @@ KISBPM.TOOLBAR_CONFIG = {
             "title" : "TOOLBAR.ACTION.SAVE",
             "cssClass" : "toolbar-separator"
         },
-        /*{
+        {
             "type" : "button",
             "title" : "TOOLBAR.ACTION.ALIGNVERTICAL",
             "cssClass" : "editor-icon editor-icon-align-vertical",
@@ -95,8 +95,8 @@ KISBPM.TOOLBAR_CONFIG = {
             "enabled" : false,
             "enabledAction" : "element",
             "minSelectionCount" : 2
-        },*/
-        /*{
+        },
+        {
             "type" : "button",
             "title" : "TOOLBAR.ACTION.ALIGNHORIZONTAL",
             "cssClass" : "editor-icon editor-icon-align-horizontal",
@@ -104,8 +104,8 @@ KISBPM.TOOLBAR_CONFIG = {
             "enabledAction" : "element",
             "enabled" : false,
             "minSelectionCount" : 2
-        },*/
-        /*{
+        },
+        {
             "type" : "button",
             "title" : "TOOLBAR.ACTION.SAMESIZE",
             "cssClass" : "editor-icon editor-icon-same-size",
@@ -113,12 +113,12 @@ KISBPM.TOOLBAR_CONFIG = {
             "enabledAction" : "element",
             "enabled" : false,
             "minSelectionCount" : 2
-        },*/
-        /* {
+        },
+        {
         	"type" : "separator",
         	"title" : "TOOLBAR.ACTION.SAVE",
         	"cssClass" : "toolbar-separator"
-        },*/
+        },
         {
             "type" : "button",
             "title" : "TOOLBAR.ACTION.ZOOMIN",
@@ -167,7 +167,7 @@ KISBPM.TOOLBAR_CONFIG = {
     "secondaryItems" : [
 		{
 		    "type" : "button",
-		    "title" : "关闭",
+		    "title" : "Close",
 		    "cssClass" : "editor-icon editor-icon-close",
 		    "action" : "KISBPM.TOOLBAR.ACTIONS.closeEditor"
 		}
