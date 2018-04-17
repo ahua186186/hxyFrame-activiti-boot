@@ -27,7 +27,7 @@ private Expression text1;
 
 public void execute(DelegateExecution execution) throws Exception {
 
-    System.out.println("serviceTask已经执行已经执行！");
+    System.out.println("serviceTask已经执行已经执行...！");
 
     String value1 = (String) text1.getValue(execution);
 
