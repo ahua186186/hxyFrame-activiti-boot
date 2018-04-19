@@ -396,6 +396,7 @@ public class ActModelerServiceImpl implements ActModelerService {
         tasklog.setDealId(UserUtils.getCurrentUserId().toString());
         tasklog.setAppAction(Constant.ActTaskResult.AGREE.getValue());
         tasklog.setAppOpinion(processTaskDto.getRemark());
+        tasklog.setCreateTime(new Date());
         //保存流程业务关系表
         ExtendActFlowbusEntity flowBus = new ExtendActFlowbusEntity();
         flowBus.setId(Utils.uuid());
@@ -426,7 +427,7 @@ public class ActModelerServiceImpl implements ActModelerService {
                 tasklogEntity.setTaskId(task.getId());
                 tasklogEntity.setTaskName(task.getName());
                 tasklogEntity.setAdvanceId(processTaskDto.getNextUserIds());
-                tasklogEntity.setCreateTime(task.getCreateTime());
+                tasklogEntity.setCreateTime(new Date());
                 tasklogService.save(tasklogEntity);
             }
             //提交之后，更改业务审批状态为审批中，审批结果也为审批中
@@ -819,7 +820,7 @@ public class ActModelerServiceImpl implements ActModelerService {
                             tasklogEntity.setTaskId(t.getId());
                             tasklogEntity.setTaskName(t.getName());
                             tasklogEntity.setAdvanceId(processTaskDto.getNextUserIds());
-                            tasklogEntity.setCreateTime(task.getCreateTime());
+                            tasklogEntity.setCreateTime(new Date());
                             tasklogService.save(tasklogEntity);
                         }
                     }
@@ -843,7 +844,7 @@ public class ActModelerServiceImpl implements ActModelerService {
             tasklogEntity.setTaskId(task.getId());
             tasklogEntity.setTaskName(task.getName());
             tasklogEntity.setAdvanceId(processTaskDto.getNextUserIds());
-            tasklogEntity.setCreateTime(task.getCreateTime());
+            tasklogEntity.setCreateTime(new Date());
             tasklogService.save(tasklogEntity);
             //throw new MyException("更新任务日志失败");
         }
@@ -1057,8 +1058,10 @@ public class ActModelerServiceImpl implements ActModelerService {
         Class<?> aClass = Class.forName(actBus.getClassurl());
         ActTable actTable = aClass.getAnnotation(ActTable.class);
         //保存流程更改过的业务记录信息
+        //TODO 如果工作流平台化，则这一步由业务系统实现
         changeFields(actTable,processTaskDto.getBusId(),nodesetEntity.getChangeFiles(),actBus.getClassurl(),map);
         //更新业务状态信息 为已经审批
+        //TODO 如果工作流平台化，则这一步由业务系统实现
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put(TableInfo.TAB_TABLENAME, actTable.tableName());
         updateMap.put(TableInfo.TAB_PKNAME, actTable.pkName());
@@ -1107,8 +1110,10 @@ public class ActModelerServiceImpl implements ActModelerService {
         Class<?> aClass = Class.forName(actBus.getClassurl());
         ActTable actTable = aClass.getAnnotation(ActTable.class);
         //保存流程更改过的业务记录信息
+        //TODO 如果工作流平台化，则这一步由业务系统实现
         changeFields(actTable,processTaskDto.getBusId(),nodesetEntity.getChangeFiles(),actBus.getClassurl(),map);
         //更新业务状态信息 为已经审批
+        //TODO 如果工作流平台化，则这一步由业务系统实现
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put(TableInfo.TAB_TABLENAME, actTable.tableName());
         updateMap.put(TableInfo.TAB_PKNAME, actTable.pkName());
@@ -1158,7 +1163,7 @@ public class ActModelerServiceImpl implements ActModelerService {
         tasklogEntity.setTaskId(task.getId());
         tasklogEntity.setTaskName(task.getName());
         tasklogEntity.setAdvanceId(toUserId);
-        tasklogEntity.setCreateTime(task.getCreateTime());
+        tasklogEntity.setCreateTime(new Date());
         tasklogService.save(tasklogEntity);
     }
 
