@@ -649,6 +649,7 @@ public class ActModelerServiceImpl implements ActModelerService {
         //更改的值不为空
         if(StringUtils.isNotEmpty(nodesetEntity.getChangeFiles())){
             //保存流程更改过的业务记录信息
+            //TODO 如果工作流平台化，则由业务系统传入更改过的业务记录
             filedText=changeFields(actTable,processTaskDto.getBusId(),nodesetEntity.getChangeFiles(),businessEntity.getClassurl(),map);
         }
         //流程变量
