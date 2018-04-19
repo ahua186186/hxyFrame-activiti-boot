@@ -347,6 +347,7 @@ public class ActModelerServiceImpl implements ActModelerService {
         }*/
         //查询流程业务关联信息
         ExtendActBusinessEntity businessEntity = businessService.queryByActKey(processTaskDto.getActKey());
+        //TODO 如果工作流平台化,busInfo和variables由业务系统传入，接口需要改造
         Class<?> clazz = Class.forName(businessEntity.getClassurl());
         ActTable actTable=clazz.getAnnotation(ActTable.class);
         Map<String,Object> params = new HashMap<>();
@@ -371,7 +372,8 @@ public class ActModelerServiceImpl implements ActModelerService {
         //启动流程并设置启动变量（条件变量）
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(processTaskDto.getDefId(), processTaskDto.getBusId(), variables);
         processTaskDto.setInstanceId(processInstance.getId());
-        //更新当前业务表
+        //更新当前业务表，
+        //TODO 如果工作流平台化，这一步则在业务系统实现。
         Date curentTime = new Date();
         Map<String,Object> busParams = new HashMap<>();
         busParams.put("instanceId",processInstance.getId());
@@ -428,6 +430,7 @@ public class ActModelerServiceImpl implements ActModelerService {
                 tasklogService.save(tasklogEntity);
             }
             //提交之后，更改业务审批状态为审批中，审批结果也为审批中
+            //TODO 如果工作流平台化，这一步则在业务系统实现。
             Map<String, Object> updateMap = new HashMap<>();
             updateMap.put(TableInfo.TAB_TABLENAME, actTable.tableName());
             updateMap.put(TableInfo.TAB_PKNAME, actTable.pkName());
@@ -439,6 +442,7 @@ public class ActModelerServiceImpl implements ActModelerService {
         }else if(Constant.NodeType.END.getValue().equals(processTaskDto.getNodeType())){
             tasklog.setAppOpinion("空流程结束");
             //流程完成后，更改当前业务表的流程信息
+            //TODO 如果工作流平台化，这一步则在业务系统实现。
             busParams.put("status",Constant.ActStauts.END.getValue());
             busParams.put("actResult",Constant.ActResult.AGREE.getValue());
             busParams.put(TableInfo.TAB_TABLENAME,actTable.tableName());
