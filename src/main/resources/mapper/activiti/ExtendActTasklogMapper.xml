@@ -57,7 +57,7 @@
 	  	<if test="busId != null and bus_id != '' ">
 			AND bus_id=#{busId}
 		</if>
-		ORDER BY create_time,app_action DESC
+		ORDER BY create_time DESC
 	</select>
 	
  	<select id="queryTotal" resultType="int">

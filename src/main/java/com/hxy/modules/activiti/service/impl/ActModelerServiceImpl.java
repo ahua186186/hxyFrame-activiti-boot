@@ -1045,6 +1045,19 @@ public class ActModelerServiceImpl implements ActModelerService {
             ActUtils.turnTransition(processTaskDto.getTaskId(), "end", null, processTaskDto.getRemark());
         }else {
             ActUtils.turnTransition(processTaskDto.getTaskId(), activities.get(0).getId(), null, processTaskDto.getRemark());
+            List<Task> tasks = taskService.createTaskQuery().processInstanceId(processTaskDto.getInstanceId()).list();
+            for(Task mytask : tasks) {
+                ExtendActTasklogEntity tasklogEntity = new ExtendActTasklogEntity();
+                tasklogEntity.setId(Utils.uuid());
+                tasklogEntity.setBusId(processTaskDto.getBusId());
+                tasklogEntity.setDefId(processTaskDto.getDefId());
+                tasklogEntity.setInstanceId(processTaskDto.getInstanceId());
+                tasklogEntity.setTaskId(mytask.getId());
+                tasklogEntity.setTaskName(mytask.getName());
+                tasklogEntity.setAdvanceId(processTaskDto.getNextUserIds());
+                tasklogEntity.setCreateTime(new Date());
+                tasklogService.save(tasklogEntity);
+            }
 
         }//更新流程扩展日志表
         ExtendActTasklogEntity taskLog = new ExtendActTasklogEntity();
