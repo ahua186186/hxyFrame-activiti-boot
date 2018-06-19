@@ -16,6 +16,7 @@ import java.util.UUID;
 
 /**
  * 自定义SessionManager，实现不依赖cookie获取sessionid
+ * 此方案登陆成功后必须把token传给客户端
  */
 public class StatelessSessionManager extends DefaultWebSessionManager {
     /**
