@@ -71,6 +71,8 @@ public class CachingShiroSessionDao extends CachingSessionDAO {
         Session session = null;
         try {
             String key = prefix + sessionId;
+            boolean haskey = redisClusterUtil.hasKey(key);
+            logger.info("doDelete haskey:" + haskey);
             session = (Session) redisClusterUtil.getObject(key);
             logger.info("sessionId {} name {} 被读取", sessionId, session.getClass().getName());
         } catch (Exception e) {
@@ -132,6 +134,8 @@ public class CachingShiroSessionDao extends CachingSessionDAO {
     @Override
     protected void doDelete(Session session) {
         try {
+            boolean haskey = redisClusterUtil.hasKey(prefix + session.getId());
+            logger.info("doDelete haskey:" + haskey);
             redisClusterUtil.deleteString(prefix + session.getId());
             logger.debug("Session {} 被删除", session.getId());
         } catch (Exception e) {

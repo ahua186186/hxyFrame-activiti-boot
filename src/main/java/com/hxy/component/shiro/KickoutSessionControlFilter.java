@@ -91,7 +91,7 @@ public class KickoutSessionControlFilter extends AccessControlFilter {
                 if(kickoutSession != null) {
                     //设置会话的kickout属性表示踢出了
                     kickoutSession.setAttribute("kickout", true);
-                    redisClusterUtil.setObject(KickoutSessionControlFilter.kickOutCache,deque);
+                    redisClusterUtil.setObject(KickoutSessionControlFilter.kickOutCache+username,deque);
                 }
             } catch (Exception e) {//ignore exception
             }

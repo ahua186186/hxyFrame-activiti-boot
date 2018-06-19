@@ -103,7 +103,7 @@ public class LoginController extends BaseController {
             if(deque == null) {
                 deque = new ArrayDeque<Serializable>();
             }
-            Session session = subject.getSession();
+            Session session = subject.getSession();//初始化会话
             Serializable sessionId = session.getId();
             deque.push(sessionId);
             redisClusterUtil.setObject(KickoutSessionControlFilter.kickOutCache+username,deque);

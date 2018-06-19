@@ -2,16 +2,20 @@ package com.hxy.config;
 
 import com.google.common.collect.Maps;
 import com.hxy.component.redis.CachingShiroSessionDao;
+import com.hxy.component.redis.ShiroSessionListener;
 import com.hxy.component.shiro.AjaxFormAuthenticationFilter;
 import com.hxy.component.shiro.MyRealm;
 import com.hxy.component.shiro.RetryLimitHashedCredentialsMatcher;
+import com.hxy.modules.common.utils.SpringContextUtils;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.filter.authc.AnonymousFilter;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
@@ -21,7 +25,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.Filter;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,9 +59,9 @@ public class ShiroConfig {
         filters.put("authc", this.authcFilter());
         //filters.put("kickout",new KickoutSessionControlFilter());
         shiroFilter.setFilters(filters);
-
+        //AnonymousFilter
         Map<String, String> filterMap = new LinkedHashMap<>();
-        filterMap.put("/druid/**", "anon");
+        filterMap.put("/druid/**", "anon"); //默认过滤器AnonymousFilter
         filterMap.put("/app/**", "anon");
         filterMap.put("/**/*.css", "anon");
         filterMap.put("/**/*.js", "anon");
@@ -78,16 +84,22 @@ public class ShiroConfig {
 
 
     @Bean("sessionManager")
-    public SessionManager sessionManager(CachingShiroSessionDao sessionDAO){
-        sessionDAO.setPrefix("shiro-session:");
+    public SessionManager sessionManager(CachingShiroSessionDao cachingShiroSessionDao,ShiroSessionListener shiroSessionListener){
+        //CachingShiroSessionDao cachingShiroSessionDao = (CachingShiroSessionDao)SpringContextUtils.getBean("cachingShiroSessionDao");
+        //ShiroSessionListener shiroSessionListener = (ShiroSessionListener)SpringContextUtils.getBean("shiroSessionListener");
+
+        cachingShiroSessionDao.setPrefix("shiro-session:");
         //注意中央缓存有效时间要比本地缓存有效时间长
-        sessionDAO.setSeconds(1800);
+        cachingShiroSessionDao.setSeconds(1800);
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         //设置session过期时间为1小时(单位：毫秒)，默认为30分钟
         sessionManager.setGlobalSessionTimeout(60 * 60 * 1000);
         sessionManager.setSessionIdUrlRewritingEnabled(false);
         sessionManager.setSessionValidationSchedulerEnabled(true);
-        sessionManager.setSessionDAO(sessionDAO);
+        sessionManager.setSessionDAO(cachingShiroSessionDao);
+        List listeners = new ArrayList<>();
+        listeners.add(shiroSessionListener);
+        sessionManager.setSessionListeners(listeners);
         return sessionManager;
     }
 
